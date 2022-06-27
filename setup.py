@@ -14,19 +14,19 @@ class genericpy_bdist_wheel(_bdist_wheel):
         python, abi = "py2.py3", "none"
         return python, abi, plat
 
-# Read the clang-format version from the "single source of truth"
+# Read the clang-tidy version from the "single source of truth"
 def get_version():
-    with open("clang-format_version.cmake", "r") as version_file:
+    with open("clang-tidy_version.cmake", "r") as version_file:
         parsed = {}
         for line in version_file:
             match = re.match("set\((.*) (.*)\)", line)
             if len(match.groups()) != 2:
                 raise ValueError("Version File not readable")
             parsed[match.groups()[0]] = match.groups()[1]
-        if parsed['CLANG_FORMAT_WHEEL_VERSION'] == "0":
-            return f"{parsed['CLANG_FORMAT_VERSION']}"
+        if parsed['CLANG_TIDY_WHEEL_VERSION'] == "0":
+            return f"{parsed['CLANG_TIDY_VERSION']}"
         else:
-            return f"{parsed['CLANG_FORMAT_VERSION']}.{parsed['CLANG_FORMAT_WHEEL_VERSION']}"
+            return f"{parsed['CLANG_TIDY_VERSION']}.{parsed['CLANG_TIDY_WHEEL_VERSION']}"
 
 
 # Parse the given README file
@@ -35,18 +35,16 @@ with open("README.md", "r") as readme_file:
 
 cmdclass = {"bdist_wheel": genericpy_bdist_wheel}
 setup(
-    name="clang-format",
+    name="clang-tidy",
     version=get_version(),
     cmdclass=cmdclass,
     author="Dominic Kempf",
     author_email="ssc@iwr.uni-heidelberg.de",
-    packages=["clang_format"],
+    packages=["clang_tidy"],
     zip_safe=False,
     entry_points={
         "console_scripts": [
-            "clang-format=clang_format:clang_format",
-            "git-clang-format=clang_format:git_clang_format",
-            "clang-format-diff.py=clang_format:clang_format_diff"
+            "clang-tidy=clang_tidy:clang_tidy",
         ]
     },
     description="Clang-Format is an LLVM-based code formatting tool",
@@ -55,7 +53,7 @@ setup(
     url="http://clang.llvm.org/",
     project_urls={
         "Documentation": "https://clang.llvm.org/docs/ClangFormat.html",
-        "Source": "https://github.com/ssciwr/clang-format-wheel"
+        "Source": "https://github.com/ssciwr/clang-tidy-wheel"
     },
     download_url="https://github.com/llvm/llvm-project/releases",
     classifiers=[

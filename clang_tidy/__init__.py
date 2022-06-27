@@ -17,13 +17,13 @@ def _run_python(name):
     return subprocess.call([sys.executable, script] + sys.argv[1:])
 
 
-def clang_format():
-    raise SystemExit(_run("clang-format"))
+def clang_tidy():
+    raise SystemExit(_run("clang-tidy"))
 
 
-def clang_format_diff():
-    raise SystemExit(_run_python("clang-format-diff.py"))
+def clang_tidy_diff():
+    raise SystemExit(_run_python("clang-tidy-diff.py"))
 
 
-def git_clang_format():
-    raise SystemExit(_run_python("git-clang-format"))
+def git_clang_tidy():
+    raise SystemExit(_run_python("git-clang-tidy"))
