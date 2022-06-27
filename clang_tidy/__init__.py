@@ -21,9 +21,3 @@ def clang_tidy():
     raise SystemExit(_run("clang-tidy"))
 
 
-def clang_tidy_diff():
-    raise SystemExit(_run_python("clang-tidy-diff.py"))
-
-
-def git_clang_tidy():
-    raise SystemExit(_run_python("git-clang-tidy"))

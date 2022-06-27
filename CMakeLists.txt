@@ -18,7 +18,7 @@ ExternalProject_add(build-clang-tidy
   USES_TERMINAL_DOWNLOAD 1
   USES_TERMINAL_CONFIGURE 1
   USES_TERMINAL_BUILD 1
-  CMAKE_ARGS -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DLLVM_ENABLE_PROJECTS=clang
+  CMAKE_ARGS -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DLLVM_ENABLE_PROJECTS=clang$<SEMICOLON>clang-tools-extra
   BUILD_COMMAND ${CMAKE_COMMAND} --build . --target clang-tidy
 )
 set(clang-tidy-executable ${CMAKE_BINARY_DIR}/llvm/bin/clang-tidy${CMAKE_EXECUTABLE_SUFFIX})
@@ -39,7 +39,5 @@ endif()
 install(
   PROGRAMS
     ${clang-tidy-executable}
-    ${CMAKE_BINARY_DIR}/llvm-project/clang/tools/clang-tidy/clang-tidy-diff.py
-    ${CMAKE_BINARY_DIR}/llvm-project/clang/tools/clang-tidy/git-clang-tidy
   DESTINATION clang_tidy/data/bin
 )
