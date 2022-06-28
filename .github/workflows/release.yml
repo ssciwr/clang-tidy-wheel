@@ -37,15 +37,16 @@ jobs:
           - os: ubuntu-20.04
             arch: "i686"
             use_qemu: false
-          - os: ubuntu-20.04
-            arch: "aarch64"
-            use_qemu: true
-          - os: ubuntu-20.04
-            arch: "ppc64le"
-            use_qemu: true
-          - os: ubuntu-20.04
-            arch: "s390x"
-            use_qemu: true
+              # These take too long to build on Github
+              #- os: ubuntu-20.04
+              #arch: "aarch64"
+              #use_qemu: true
+              #- os: ubuntu-20.04
+              #arch: "ppc64le"
+              #use_qemu: true
+              #- os: ubuntu-20.04
+              #arch: "s390x"
+              #use_qemu: true
           - os: windows-2019
             arch: "AMD64"
             use_qemu: false
