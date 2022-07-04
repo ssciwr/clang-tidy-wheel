@@ -14,24 +14,6 @@ This projects intends to release a new PyPI package for each major and minor rel
 
 You can use `pipx` to run clang-tidy, as well. For example, `pipx run clang-tidy <args>` will run clang-tidy without any previous install required on any machine with pipx (including all default GitHub Actions / Azure runners, avoiding requiring a pre-install step or even `actions/setup-python`).
 
-## Use from pre-commit
-
-A [pre-commit](https://pre-commit.com) hook is also [provided](https://github.com/pre-commit/mirrors-clang-tidy), use like this:
-
-```yaml
-- repo: https://github.com/pre-commit/mirrors-clang-tidy
-  rev: v14.0.6
-  hooks:
-  - id: clang-tidy
-    types_or: [c++, c, cuda]
-```
-
-In contrast to many other pre-commit hooks, the versioning of the hook matches the versioning of `clang-tidy`.
-
-If you are required to stick with a given major/minor version of `clang-tidy` with your pre-commit-hook, you can use [this alternative hook repository](https://github.com/ssciwr/clang-tidy-hook) that also receives backports of older versions of clang-tidy.
-Currently, all major/minor versions of LLVM >= 10 are supported.
-It is best to subscribe to releases of the hook repository to get notified of new backport releases, as `pre-commit`'s auto-upgrade functionality will not work in that case.
-
 ## Building new releases
 
 The [clang-tidy-wheel repository](https://github.com/ssciwr/clang-tidy-wheel) provides the logic to build and publish binary wheels of the `clang-tidy` utility.
@@ -57,7 +39,5 @@ This repository extends the great work of several other projects:
 * The build logic is based on [scikit-build](https://github.com/scikit-build/scikit-build) which greatly reduces the amount of low level code necessary to package `clang-tidy`.
 * The `scikit-build` packaging examples of [CMake](https://github.com/scikit-build/cmake-python-distributions) and [Ninja](https://github.com/scikit-build/ninja-python-distributions) were very helpful in packaging `clang-tidy`.
 * The CI build process is controlled by [cibuildwheel](https://github.com/pypa/cibuildwheel) which makes building wheels across a number of platforms a pleasant experience (!)
-
-Special thanks goes to mgevaert who initiated this project and maintained it until 2021.
 
 We are grateful for the generous provisioning with CI resources that GitHub currently offers to Open Source projects.
