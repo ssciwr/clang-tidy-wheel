@@ -1,5 +1,9 @@
 import os
+import sys
 import tempfile
+
+# test the installed clang_tidy package, not the local one
+sys.path.remove(os.path.dirname(os.path.dirname(__file__)))
 
 import clang_tidy
 
