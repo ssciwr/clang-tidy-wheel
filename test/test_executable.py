@@ -20,6 +20,6 @@ def test_include_iostream():
     with open(compilation_unit, "w") as ostr:
         ostr.write("#include <iostream>\n")
     try:
-        assert clang_tidy._run("clang-tidy", compilation_unit) == 0
+        assert clang_tidy._run("clang-tidy", "--extra-arg=-v", compilation_unit) == 0
     finally:
         os.remove(compilation_unit)
