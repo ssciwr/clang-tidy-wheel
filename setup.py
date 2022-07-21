@@ -52,7 +52,7 @@ setup(
     long_description_content_type="text/markdown",
     url="http://clang.llvm.org/",
     project_urls={
-        "Documentation": "https://clang.llvm.org/docs/ClangFormat.html",
+        "Documentation": "https://clang.llvm.org/extra/clang-tidy/",
         "Source": "https://github.com/ssciwr/clang-tidy-wheel"
     },
     download_url="https://github.com/llvm/llvm-project/releases",
