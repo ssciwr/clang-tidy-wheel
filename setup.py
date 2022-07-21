@@ -47,7 +47,7 @@ setup(
             "clang-tidy=clang_tidy:clang_tidy",
         ]
     },
-    description="Clang-Format is an LLVM-based code formatting tool",
+    description="clang-tidy is a clang-based C++ “linter” tool.",
     long_description=readme,
     long_description_content_type="text/markdown",
     url="http://clang.llvm.org/",
