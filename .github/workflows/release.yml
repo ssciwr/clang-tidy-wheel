@@ -65,6 +65,10 @@ jobs:
       if: runner.os == 'Windows' && ((!matrix.use_qemu) || fromJSON(env.USE_QEMU))
       run: git config --system core.longpaths true
 
+    - name: Export macOS SDKROOT
+      if: runner.os == 'macOS'
+      run: echo SDKROOT=$(xcrun --sdk macosx --show-sdk-path) >> $GITHUB_ENV
+
     - name: Override LLVM version (${{ github.event.inputs.llvm_version }})
       if: github.event.inputs.llvm_version
       run: |

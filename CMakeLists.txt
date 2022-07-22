@@ -41,3 +41,9 @@ install(
     ${clang-tidy-executable}
   DESTINATION clang_tidy/data/bin
 )
+
+install(
+  DIRECTORY
+    ${CMAKE_BINARY_DIR}/llvm/lib/clang/${CLANG_TIDY_VERSION}/include
+  DESTINATION clang_tidy/data/lib/clang/${CLANG_TIDY_VERSION}
+)
