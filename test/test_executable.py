@@ -21,6 +21,8 @@ def test_executable_file():
 
 
 def test_include_iostream():
+    if os.environ.get("RUNNER_OS", "None").lower() == "macos":
+        pytest.xfail("https://github.com/ssciwr/clang-tidy-wheel/issues/19")
     import clang_tidy
 
     fd, compilation_unit = tempfile.mkstemp(suffix=".cpp")
