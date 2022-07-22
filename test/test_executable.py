@@ -2,19 +2,27 @@ import os
 import sys
 import tempfile
 
-# test the installed clang_tidy package, not the local one
-sys.path.remove(os.path.dirname(os.path.dirname(__file__)))
+import pytest
 
-import clang_tidy
+
+@pytest.fixture(autouse=True, scope='session')
+def avoid_local_import(monkeypatch):
+    """all test functions automatically load this fixture"""
+    # test the installed clang_tidy package, not the local one
+    monkeypatch.delitem(sys.path, os.path.dirname(os.path.dirname(__file__)))
 
 
 def test_executable_file():
+    import clang_tidy
+
     exe = clang_tidy._get_executable("clang-tidy")
     assert os.path.exists(exe), "'clang-tidy' executable is missing"
     assert os.access(exe, os.X_OK), "'clang-tidy'program is not executable"
 
 
 def test_include_iostream():
+    import clang_tidy
+
     fd, compilation_unit = tempfile.mkstemp(suffix=".cpp")
     os.close(fd)
     with open(compilation_unit, "w") as ostr:
