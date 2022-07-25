@@ -31,10 +31,10 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: ubuntu-20.04
+          - os: ubuntu-22.04
             arch: "x86_64"
             use_qemu: false
-          - os: ubuntu-20.04
+          - os: ubuntu-22.04
             arch: "i686"
             use_qemu: false
               # These take too long to build on Github
@@ -53,7 +53,7 @@ jobs:
           - os: windows-2019
             arch: "x86"
             use_qemu: false
-          - os: macos-10.15
+          - os: macos-12
             arch: "universal2"
             use_qemu: false
 
@@ -92,7 +92,7 @@ jobs:
 
   build-sdist:
     name: Build source distribution
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
       - uses: actions/checkout@v3
@@ -113,7 +113,7 @@ jobs:
   test-sdist:
     name: Test build from source distribution
     needs: [build-sdist]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
       - uses: actions/checkout@v3
@@ -143,7 +143,7 @@ jobs:
   upload_pypi:
     name: Upload to PyPI
     needs: [build-wheels, build-sdist, test-sdist]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.repository_owner == 'ssciwr'
 
     steps:
