@@ -1,10 +1,11 @@
-import os
 import subprocess
 import sys
 
+import pkg_resources
+
 
 def _get_executable(name):
-    return os.path.join(os.path.dirname(__file__), "data", "bin", name)
+    return pkg_resources.resource_filename('clang_tidy', f"data/bin/{name}")
 
 def _run(name, *args):
     command = [_get_executable(name)]
