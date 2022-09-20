@@ -84,6 +84,7 @@ jobs:
       if: (!matrix.use_qemu) || fromJSON(env.USE_QEMU)
       env:
         CIBW_ARCHS: "${{ matrix.arch }}"
+        CIBW_BEFORE_TEST:  rm -rf {package}/clang_tidy
 
     - uses: actions/upload-artifact@v3
       if: (!matrix.use_qemu) || fromJSON(env.USE_QEMU)
