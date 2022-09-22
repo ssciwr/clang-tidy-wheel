@@ -1,11 +1,20 @@
 import subprocess
 import sys
-
+from pathlib import Path
+import functools
 import pkg_resources
 
 
-def _get_executable(name):
-    return pkg_resources.resource_filename('clang_tidy', f"data/bin/{name}")
+@functools.lru_cache(maxsize=None)
+def _get_executable(name:str) -> Path:
+    possibles = [Path(pkg_resources.resource_filename('clang_tidy', f"data/bin/{name}{s}"))
+                 for s in ("", ".exe", ".bin", ".dmg")]
+    for exe in possibles:
+        if exe.exists():
+            print(f'Resource filename: {exe} ')
+            return exe
+
+    raise FileNotFoundError(f"No executable found for {name} at\n{possibles}")
 
 def _run(name, *args):
     command = [_get_executable(name)]
