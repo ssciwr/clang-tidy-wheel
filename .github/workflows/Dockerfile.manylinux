@@ -1,0 +1,6 @@
+FROM python:3.11
+
+COPY test /src/test
+COPY wheelhouse/clang*manylinux*whl /tmp
+RUN python -m pip install pytest /tmp/*whl \
+    && pytest -vs /src/test

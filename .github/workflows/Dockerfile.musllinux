@@ -1,0 +1,6 @@
+FROM python:3.11-alpine
+
+COPY test /src/test
+COPY wheelhouse/clang*musllinux*whl /tmp
+RUN python -m pip install pytest /tmp/*whl \
+    && pytest -vs /src/test

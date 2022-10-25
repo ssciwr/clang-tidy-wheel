@@ -85,7 +85,14 @@ jobs:
       env:
         CIBW_ARCHS: "${{ matrix.arch }}"
         CIBW_BEFORE_TEST:  rm -rf {package}/clang_tidy
-
+        CIBW_TEST_SKIP: "*linux*"
+    # clang-tidy simply does not want to cooperate with the github linux image
+    - name: Test musllinux
+      if: runner.os == 'Linux' && !(matrix.use_qemu)
+      run: docker build -f .github/workflows/Dockerfile.musllinux .
+    - name: Test manylinux
+      if: runner.os == 'Linux' && !(matrix.use_qemu)
+      run: docker build -f .github/workflows/Dockerfile.manylinux .
     - uses: actions/upload-artifact@v3
       if: (!matrix.use_qemu) || fromJSON(env.USE_QEMU)
       with:
