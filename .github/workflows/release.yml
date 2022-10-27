@@ -34,9 +34,19 @@ jobs:
           - os: ubuntu-22.04
             arch: "x86_64"
             use_qemu: false
+            skip: "*manylinux*"
+          - os: ubuntu-22.04
+            arch: "x86_64"
+            use_qemu: false
+            skip: "*musllinux*"
           - os: ubuntu-22.04
             arch: "i686"
             use_qemu: false
+            skip: "*manylinux*"
+          - os: ubuntu-22.04
+            arch: "i686"
+            use_qemu: false
+            skip: "*musllinux*"
               # These take too long to build on Github
               #- os: ubuntu-20.04
               #arch: "aarch64"
@@ -47,15 +57,18 @@ jobs:
               #- os: ubuntu-20.04
               #arch: "s390x"
               #use_qemu: true
-          - os: windows-2019
+          - os: windows-2022
             arch: "AMD64"
             use_qemu: false
-          - os: windows-2019
+            skip: ""
+          - os: windows-2022
             arch: "x86"
             use_qemu: false
+            skip: ""
           - os: macos-12
             arch: "universal2"
             use_qemu: false
+            skip: ""
 
     steps:
     - uses: actions/checkout@v3
@@ -86,13 +99,16 @@ jobs:
         CIBW_ARCHS: "${{ matrix.arch }}"
         CIBW_BEFORE_TEST:  rm -rf {package}/clang_tidy
         CIBW_TEST_SKIP: "*linux*"
+        CIBW_SKIP: "${{matrix.skip}}"
     # clang-tidy simply does not want to cooperate with the github linux image
-    - name: Test musllinux
-      if: runner.os == 'Linux' && !(matrix.use_qemu)
-      run: docker build -f .github/workflows/Dockerfile.musllinux .
-    - name: Test manylinux
-      if: runner.os == 'Linux' && !(matrix.use_qemu)
-      run: docker build -f .github/workflows/Dockerfile.manylinux .
+    - name: Test Linux Wheel
+      if: runner.os == 'Linux' && !(matrix.use_qemu) && matrix.arch == 'x86_64'
+      run: |
+        if [[ "${{matrix.skip}}" == "*manylinux*" ]] ; then
+          docker build --build-arg BASEOS=alpine3.16 --build-arg PLATFORM=musllinux -f .github/workflows/Dockerfile .
+        else
+          docker build --build-arg BASEOS=slim-bullseye --build-arg PLATFORM=manylinux -f .github/workflows/Dockerfile .        
+        fi
     - uses: actions/upload-artifact@v3
       if: (!matrix.use_qemu) || fromJSON(env.USE_QEMU)
       with:
