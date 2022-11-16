@@ -31,12 +31,22 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: ubuntu-20.04
+          - os: ubuntu-22.04
             arch: "x86_64"
             use_qemu: false
-          - os: ubuntu-20.04
+            skip: "*manylinux*"
+          - os: ubuntu-22.04
+            arch: "x86_64"
+            use_qemu: false
+            skip: "*musllinux*"
+          - os: ubuntu-22.04
             arch: "i686"
             use_qemu: false
+            skip: "*manylinux*"
+          - os: ubuntu-22.04
+            arch: "i686"
+            use_qemu: false
+            skip: "*musllinux*"
               # These take too long to build on Github
               #- os: ubuntu-20.04
               #arch: "aarch64"
@@ -47,15 +57,18 @@ jobs:
               #- os: ubuntu-20.04
               #arch: "s390x"
               #use_qemu: true
-          - os: windows-2019
+          - os: windows-2022
             arch: "AMD64"
             use_qemu: false
-          - os: windows-2019
+            skip: ""
+          - os: windows-2022
             arch: "x86"
             use_qemu: false
-          - os: macos-10.15
+            skip: ""
+          - os: macos-12
             arch: "universal2"
             use_qemu: false
+            skip: ""
 
     steps:
     - uses: actions/checkout@v3
@@ -64,6 +77,10 @@ jobs:
     - name: Support long paths
       if: runner.os == 'Windows' && ((!matrix.use_qemu) || fromJSON(env.USE_QEMU))
       run: git config --system core.longpaths true
+
+    - name: Export macOS SDKROOT
+      if: runner.os == 'macOS'
+      run: echo SDKROOT=$(xcrun --sdk macosx --show-sdk-path) >> $GITHUB_ENV
 
     - name: Override LLVM version (${{ github.event.inputs.llvm_version }})
       if: github.event.inputs.llvm_version
@@ -76,11 +93,22 @@ jobs:
       if: runner.os == 'Linux' && ((matrix.use_qemu) && fromJSON(env.USE_QEMU))
 
     - name: Build wheels
-      uses: pypa/cibuildwheel@v2.7.0
+      uses: pypa/cibuildwheel@v2.8.1
       if: (!matrix.use_qemu) || fromJSON(env.USE_QEMU)
       env:
         CIBW_ARCHS: "${{ matrix.arch }}"
-
+        CIBW_BEFORE_TEST:  rm -rf {package}/clang_tidy
+        CIBW_TEST_SKIP: "*linux*"
+        CIBW_SKIP: "${{matrix.skip}}"
+    # clang-tidy simply does not want to cooperate with the github linux image
+    - name: Test Linux Wheel
+      if: runner.os == 'Linux' && !(matrix.use_qemu) && matrix.arch == 'x86_64'
+      run: |
+        if [[ "${{matrix.skip}}" == "*manylinux*" ]] ; then
+          docker build --build-arg BASEOS=alpine3.16 --build-arg PLATFORM=musllinux -f .github/workflows/Dockerfile .
+        else
+          docker build --build-arg BASEOS=slim-bullseye --build-arg PLATFORM=manylinux -f .github/workflows/Dockerfile .        
+        fi
     - uses: actions/upload-artifact@v3
       if: (!matrix.use_qemu) || fromJSON(env.USE_QEMU)
       with:
@@ -88,7 +116,7 @@ jobs:
 
   build-sdist:
     name: Build source distribution
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
       - uses: actions/checkout@v3
@@ -109,7 +137,7 @@ jobs:
   test-sdist:
     name: Test build from source distribution
     needs: [build-sdist]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
       - uses: actions/checkout@v3
@@ -125,7 +153,9 @@ jobs:
           path: sdist
 
       - name: Install from SDist
-        run:
+        run: |
+          # make sure the test will not pick this up  
+          rm -r clang_tidy
           pip install sdist/*.tar.gz
 
       - name: Install test requirements
@@ -139,7 +169,7 @@ jobs:
   upload_pypi:
     name: Upload to PyPI
     needs: [build-wheels, build-sdist, test-sdist]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.repository_owner == 'ssciwr'
 
     steps:
