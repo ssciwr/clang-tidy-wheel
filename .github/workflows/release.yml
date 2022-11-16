@@ -153,7 +153,9 @@ jobs:
           path: sdist
 
       - name: Install from SDist
-        run:
+        run: |
+          # make sure the test will not pick this up  
+          rm -r clang_tidy
           pip install sdist/*.tar.gz
 
       - name: Install test requirements
