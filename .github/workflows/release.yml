@@ -65,8 +65,12 @@ jobs:
             arch: "x86"
             use_qemu: false
             skip: ""
-          - os: macos-12
-            arch: "x86_64 arm64 universal2"
+          - os: macos-11
+            arch: "x86_64"
+            use_qemu: false
+            skip: ""
+          - os: macos-11
+            arch: "arm64"
             use_qemu: false
             skip: ""
 
