@@ -69,10 +69,6 @@ jobs:
             arch: "x86_64"
             use_qemu: false
             skip: ""
-          - os: macos-11
-            arch: "arm64"
-            use_qemu: false
-            skip: ""
 
     steps:
     - uses: actions/checkout@v3
