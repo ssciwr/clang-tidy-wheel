@@ -4,6 +4,8 @@ cmake_minimum_required(VERSION 3.16)
 # Include the "single source of truth" for the clang-tidy version
 include(clang-tidy_version.cmake)
 string(REPLACE "-" "" CLANG_TIDY_VERSION_SHORT "${CLANG_TIDY_VERSION}")
+string(REPLACE "." ";" CLANG_TIDY_VERSION_LIST ${CLANG_TIDY_VERSION})
+list(GET CLANG_TIDY_VERSION_LIST 0 CLANG_TIDY_VERSION_MAJOR)
 
 # Define a build rule clang-tidy
 set(LLVM_DOWNLOAD_URL "https://github.com/llvm/llvm-project/releases/download/llvmorg-${CLANG_TIDY_VERSION}/llvm-project-${CLANG_TIDY_VERSION_SHORT}.src.tar.xz")
@@ -44,6 +46,6 @@ install(
 
 install(
   DIRECTORY
-    ${CMAKE_BINARY_DIR}/llvm/lib/clang/${CLANG_TIDY_VERSION}/include
-  DESTINATION clang_tidy/data/lib/clang/${CLANG_TIDY_VERSION}
+    ${CMAKE_BINARY_DIR}/llvm/lib/clang/${CLANG_TIDY_VERSION_MAJOR}/include
+  DESTINATION clang_tidy/data/lib/clang/${CLANG_TIDY_VERSION_MAJOR}
 )
