@@ -2,14 +2,16 @@ import subprocess
 import sys
 from pathlib import Path
 import functools
-import pkg_resources
+from importlib.resources import files
 import os
 
 
 @functools.lru_cache(maxsize=None)
 def _get_executable(name:str) -> Path:
-    possibles = [Path(pkg_resources.resource_filename('clang_tidy', f"data/bin/{name}{s}"))
-                 for s in ("", ".exe", ".bin", ".dmg")]
+    possibles = [
+        Path(files("clang_tidy") / f"data/bin/{name}{s}")
+        for s in ("", ".exe", ".bin", ".dmg")
+    ]
     for exe in possibles:
         if exe.exists():
             if os.environ.get("CLANG_TIDY_WHEEL_VERBOSE", None):
