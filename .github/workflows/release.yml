@@ -113,7 +113,7 @@ jobs:
         else
           docker build --build-arg BASEOS=slim-bullseye --build-arg PLATFORM=manylinux -f .github/workflows/Dockerfile .        
         fi
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       if: (!matrix.use_qemu) || fromJSON(env.USE_QEMU)
       with:
         path: ./wheelhouse/*.whl
@@ -134,7 +134,7 @@ jobs:
       - name: Build SDist
         run: pipx run build --sdist
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           path: dist/*.tar.gz
   
