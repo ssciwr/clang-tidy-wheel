@@ -113,11 +113,18 @@ jobs:
         else
           docker build --build-arg BASEOS=slim-bullseye --build-arg PLATFORM=manylinux -f .github/workflows/Dockerfile .        
         fi
+    - name: Set artifact name
+      id: set_artifact_name
+      shell: bash -l {0}
+      run: |
+        VALUE="archive_wheels_${{ matrix.os }}_${{ matrix.arch }}_${{ matrix.skip }}"
+        VALUE="${VALUE//\*/}"
+        echo "value=${VALUE}" >> ${GITHUB_OUTPUT}
     - uses: actions/upload-artifact@v4
       if: (!matrix.use_qemu) || fromJSON(env.USE_QEMU)
       with:
         path: ./wheelhouse/*.whl
-        name: archive_wheels_${{ matrix.os }}_${{ matrix.arch }}_${{ matrix.skip }}
+        name: ${{ steps.set_artifact_name.outputs.value }}
 
   build-sdist:
     name: Build source distribution
