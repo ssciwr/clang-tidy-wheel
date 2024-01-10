@@ -117,6 +117,7 @@ jobs:
       if: (!matrix.use_qemu) || fromJSON(env.USE_QEMU)
       with:
         path: ./wheelhouse/*.whl
+        name: archive_wheels_${{ matrix.os }}_${{ matrix.arch }}_${{ matrix.skip }}
 
   build-sdist:
     name: Build source distribution
@@ -137,6 +138,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           path: dist/*.tar.gz
+          name: archive_sdist
   
   test-sdist:
     name: Test build from source distribution
@@ -151,9 +153,9 @@ jobs:
         with:
           python-version: '3.9'
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
-          name: artifact
+          name: archive_sdist
           path: sdist
 
       - name: Install from SDist
@@ -177,10 +179,11 @@ jobs:
     if: github.repository_owner == 'ssciwr'
 
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
-          name: artifact
+          pattern: archive*
           path: dist
+          merge-multiple: true
 
       - name: Upload to PyPI
         uses: pypa/gh-action-pypi-publish@v1.8.11
