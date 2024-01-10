@@ -41,3 +41,8 @@ This repository extends the great work of several other projects:
 * The CI build process is controlled by [cibuildwheel](https://github.com/pypa/cibuildwheel) which makes building wheels across a number of platforms a pleasant experience (!)
 
 We are grateful for the generous provisioning with CI resources that GitHub currently offers to Open Source projects.
+
+## Troubleshooting
+
+To see which clang-tidy binary the package is using
+you can set `CLANG_TIDY_WHEEL_VERBOSE` to `1` in your environment.

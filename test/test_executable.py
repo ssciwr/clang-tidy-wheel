@@ -19,12 +19,14 @@ def ensure_tidy_from_wheel(monkeypatch):
     monkeypatch.delitem(sys.modules, "clang_tidy", raising=False)
 
 
-def test_executable_file():
+def test_executable_file(capsys):
     import clang_tidy
 
+    clang_tidy._get_executable.cache_clear()
     exe = clang_tidy._get_executable("clang-tidy")
     assert os.path.exists(exe)
     assert os.access(exe, os.X_OK)
+    assert capsys.readouterr().out == ""
 
 
 def _test_code(code: str):
@@ -38,6 +40,15 @@ def _test_code(code: str):
         assert clang_tidy._run("clang-tidy", "--extra-arg=-v", compilation_unit) == 0
     finally:
         os.remove(compilation_unit)
+
+
+def test_verbose_output(capsys, monkeypatch):
+    import clang_tidy
+    monkeypatch.setenv("CLANG_TIDY_WHEEL_VERBOSE", "1")
+    # need to clear cache to make sure the function is run again
+    clang_tidy._get_executable.cache_clear()
+    clang_tidy._get_executable("clang-tidy")
+    assert capsys.readouterr().out
 
 
 @pytest.mark.skipif(
