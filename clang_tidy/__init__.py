@@ -2,14 +2,28 @@ import subprocess
 import sys
 from pathlib import Path
 import functools
-import pkg_resources
 import os
+
+if sys.version_info.minor >= 9:
+    # Only available on 3.9 or later, and required on 3.12
+    from importlib.resources import files
+else:
+    import pkg_resources
 
 
 @functools.lru_cache(maxsize=None)
 def _get_executable(name:str) -> Path:
-    possibles = [Path(pkg_resources.resource_filename('clang_tidy', f"data/bin/{name}{s}"))
-                 for s in ("", ".exe", ".bin", ".dmg")]
+    if sys.version_info.minor >= 9:
+        # Only available in 3.9 or later, and required in 3.12
+        possibles = [
+            Path(files("clang_tidy") / f"data/bin/{name}{s}")
+            for s in ("", ".exe", ".bin", ".dmg")
+        ]
+    else:
+        possibles = [
+            Path(pkg_resources.resource_filename("clang_tidy", f"data/bin/{name}{s}"))
+            for s in ("", ".exe", ".bin", ".dmg")
+        ]
     for exe in possibles:
         if exe.exists():
             if os.environ.get("CLANG_TIDY_WHEEL_VERBOSE", None):
