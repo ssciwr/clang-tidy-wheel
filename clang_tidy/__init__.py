@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 import functools
 import pkg_resources
+import os
 
 
 @functools.lru_cache(maxsize=None)
@@ -11,7 +12,8 @@ def _get_executable(name:str) -> Path:
                  for s in ("", ".exe", ".bin", ".dmg")]
     for exe in possibles:
         if exe.exists():
-            print(f'Resource filename: {exe} ')
+            if os.environ.get("CLANG_TIDY_WHEEL_VERBOSE", None):
+                print(f'Found binary: {exe} ')
             return exe
 
     raise FileNotFoundError(f"No executable found for {name} at\n{possibles}")
