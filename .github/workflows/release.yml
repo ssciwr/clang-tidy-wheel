@@ -60,19 +60,19 @@ jobs:
           - os: windows-2022
             arch: "AMD64"
             use_qemu: false
-            skip: ""
+            skip: 
           - os: windows-2022
             arch: "x86"
             use_qemu: false
-            skip: ""
+            skip: 
           - os: macos-11
             arch: "x86_64"
             use_qemu: false
-            skip: ""
+            skip: 
           - os: macos-11
             arch: "arm64"
             use_qemu: false
-            skip: ""
+            skip: 
 
     steps:
     - uses: actions/checkout@v4
@@ -97,13 +97,14 @@ jobs:
       if: runner.os == 'Linux' && ((matrix.use_qemu) && fromJSON(env.USE_QEMU))
 
     - name: Build wheels
-      uses: pypa/cibuildwheel@v2.15.0
+      uses: pypa/cibuildwheel@v2.16
       if: (!matrix.use_qemu) || fromJSON(env.USE_QEMU)
       env:
         CIBW_ARCHS: "${{ matrix.arch }}"
         CIBW_BEFORE_TEST:  rm -rf {package}/clang_tidy
         CIBW_TEST_SKIP: "*linux*"
-        CIBW_SKIP: "${{matrix.skip}}"
+        # always skip PyPY builds + what's defined in the matrix
+        CIBW_SKIP: "pp* ${{matrix.skip}}"
     # clang-tidy simply does not want to cooperate with the github linux image
     - name: Test Linux Wheel
       if: runner.os == 'Linux' && !(matrix.use_qemu) && matrix.arch == 'x86_64'
