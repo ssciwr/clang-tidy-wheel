@@ -65,7 +65,7 @@ jobs:
             arch: "x86"
             use_qemu: false
             skip: 
-          - os: macos-11
+          - os: macos-12
             arch: "x86_64"
             use_qemu: false
             skip: 
