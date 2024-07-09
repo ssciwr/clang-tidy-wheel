@@ -69,7 +69,7 @@ jobs:
             arch: "x86_64"
             use_qemu: false
             skip: 
-          - os: macos-11
+          - os: macos-14
             arch: "arm64"
             use_qemu: false
             skip: 
@@ -96,8 +96,15 @@ jobs:
       uses: docker/setup-qemu-action@v2.2.0
       if: runner.os == 'Linux' && ((matrix.use_qemu) && fromJSON(env.USE_QEMU))
 
+    - uses: actions/setup-python@v5
+      with:
+        python-version: 3.8
+      # the pre-installed python 3.8 isn't native and cannot produce ARM64 wheels
+      # see also https://github.com/pypa/cibuildwheel/pull/1871
+      if: runner.os == 'macOS' && runner.arch == 'arm64'
+
     - name: Build wheels
-      uses: pypa/cibuildwheel@v2.16
+      uses: pypa/cibuildwheel@v2.19.2
       if: (!matrix.use_qemu) || fromJSON(env.USE_QEMU)
       env:
         CIBW_ARCHS: "${{ matrix.arch }}"
