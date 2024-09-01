@@ -104,7 +104,7 @@ jobs:
       if: runner.os == 'macOS' && runner.arch == 'arm64'
 
     - name: Build wheels
-      uses: pypa/cibuildwheel@v2.19.2
+      uses: pypa/cibuildwheel@v2.20.0
       if: (!matrix.use_qemu) || fromJSON(env.USE_QEMU)
       env:
         CIBW_ARCHS: "${{ matrix.arch }}"
