@@ -47,16 +47,12 @@ jobs:
             arch: "i686"
             use_qemu: false
             skip: "*musllinux*"
-              # These take too long to build on Github
-              #- os: ubuntu-20.04
-              #arch: "aarch64"
-              #use_qemu: true
-              #- os: ubuntu-20.04
-              #arch: "ppc64le"
-              #use_qemu: true
-              #- os: ubuntu-20.04
-              #arch: "s390x"
-              #use_qemu: true
+          - os: self-hosted
+            arch: "aarch64"
+            use_qemu: true
+          - os: self-hosted
+            arch: "ppc64le"
+            use_qemu: true
           - os: windows-2022
             arch: "AMD64"
             use_qemu: false
