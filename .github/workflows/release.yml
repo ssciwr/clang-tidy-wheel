@@ -113,7 +113,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           path: dist/*.tar.gz
-          name: archive_sdist
+          name: artifacts-sdist
 
   test-sdist:
     name: Test build from source distribution
@@ -130,7 +130,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: archive_sdist
+          name: artifacts-sdist
           path: sdist
 
       - name: Install from SDist
