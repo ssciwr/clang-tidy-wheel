@@ -1,15 +1,56 @@
 [build-system]
-requires = ["setuptools>=42", "wheel", "scikit-build", "cmake>=3.16", "ninja; platform_system!='Windows'"]
+requires = ["scikit-build-core"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "clang-tidy"
+dynamic = ["version"]
+authors = [{name = "Dominic Kempf", email = "ssc@iwr.uni-heidelberg.de"}]
+license = { text = "Apache 2.0" }
+description = "Clang-tidy is an LLVM-based code analyser tool"
+readme = "README.md"
+classifiers = [
+    "Programming Language :: C",
+    "Programming Language :: C++",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: Apache Software License",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Quality Assurance",
+]
+
+[tool.scikit-build.metadata.version]
+provider = "scikit_build_core.metadata.regex"
+regex = '^(?P<value>\d+\.\d+\.\d+(\.[1-9]\d*)?)'
+input = "clang-tidy_version.txt"
+
+[project.urls]
+Clang = "http://clang.llvm.org/"
+Documentation = "https://clang.llvm.org/extra/clang-tidy/index.html#clang-tidy"
+Download = "https://github.com/llvm/llvm-project/releases"
+Source = "https://github.com/ssciwr/clang-tidy-wheel"
+
+
+[project.scripts]
+"clang-tidy" = "clang_tidy:clang_tidy"
+
+[tool.scikit-build]
+wheel.packages = ["clang_tidy"]
+wheel.py-api = "py2.py3"
+cmake.version = ">=3.16.0"
+ninja.version = ">=1.10.0"
+cmake.verbose = true
+logging.level = "DEBUG"
 
 [tool.cibuildwheel]
 # Super-verbose output for debugging purpose
 build-verbosity = 3
-
-# We restrict ourselves to CPython 3.8 and then repair the wheels to be
-# independent of the Python version - I have not found a different solution
-# within cibuildwheel to achieve this.
-build = "cp38-*"
+# Set CMAKE_GENERATOR env var which is respected by scikit-build-core to use Ninja on all platforms
+environment = "CMAKE_GENERATOR=Ninja"
 
 # Testing commands for our wheels
-test-requires = ["pytest"]
+before-test = [
+    "git config --global user.name Name",
+    "git config --global user.email foo@bar.com"
+]
+test-requires = ["pytest", "pytest-git"]
 test-command = "pytest {package}/test"
