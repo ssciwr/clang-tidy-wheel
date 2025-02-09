@@ -41,6 +41,9 @@ jobs:
           - os: ubuntu-latest
             platform: "musllinux"
             arch: "i686"
+          - os: ubuntu-24.04-arm
+            platform: "manylinux"
+            arch: "aarch64"
           # Windows
           - os: windows-latest
             platform: "win"
