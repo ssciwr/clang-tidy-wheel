@@ -58,7 +58,7 @@ jobs:
             platform: "win"
             arch: "x86"
           # macOS
-          - os: macos-13
+          - os: macos-15-intel
             platform: "macos"
             arch: "x86_64"
           - os: macos-latest
