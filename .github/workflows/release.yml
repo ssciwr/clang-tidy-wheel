@@ -99,7 +99,7 @@ jobs:
         # restrict to a single Python version as wheel does not depend on Python:
         CIBW_BUILD: "cp311-${{ matrix.platform }}*"
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v5
       with:
         name: artifacts-wheels-${{ matrix.platform }}-${{ matrix.arch }}
         path: ./wheelhouse/*.whl
@@ -119,7 +119,7 @@ jobs:
       - name: Build SDist
         run: pipx run build --sdist
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           path: dist/*.tar.gz
           name: artifacts-sdist
