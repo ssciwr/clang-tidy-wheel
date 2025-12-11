@@ -66,7 +66,7 @@ jobs:
             arch: "arm64"
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
 
     - name: Support long paths
       if: runner.os == 'Windows'
@@ -109,7 +109,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Override LLVM version (${{ github.event.inputs.llvm_version }})
         if: github.event.inputs.llvm_version
@@ -130,7 +130,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - uses: actions/setup-python@v6
         name: Install Python
