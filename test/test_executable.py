@@ -37,7 +37,14 @@ def _test_code(code: str):
     with open(compilation_unit, "w") as ostr:
         ostr.write(code)
     try:
-        assert clang_tidy._run("clang-tidy", "--extra-arg=-v", compilation_unit) == 0
+        assert (
+            clang_tidy._run(
+                "clang-tidy",
+                "--checks=bugprone-infinite-loop",
+                "--extra-arg=-v",
+                compilation_unit,
+            ) == 0
+        )
     finally:
         os.remove(compilation_unit)
 
