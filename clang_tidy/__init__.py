@@ -10,6 +10,9 @@ if sys.version_info.minor >= 9:
 else:
     import pkg_resources
 
+def get_executable(name:str) -> Path:
+    return _get_executable(name)
+
 
 @functools.lru_cache(maxsize=None)
 def _get_executable(name:str) -> Path:
