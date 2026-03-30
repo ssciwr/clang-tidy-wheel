@@ -23,7 +23,7 @@ def test_executable_file(capsys):
     import clang_tidy
 
     clang_tidy._get_executable.cache_clear()
-    exe = clang_tidy._get_executable("clang-tidy")
+    exe = clang_tidy.get_executable("clang-tidy")
     assert os.path.exists(exe)
     assert os.access(exe, os.X_OK)
     assert capsys.readouterr().out == ""
@@ -54,7 +54,7 @@ def test_verbose_output(capsys, monkeypatch):
     monkeypatch.setenv("CLANG_TIDY_WHEEL_VERBOSE", "1")
     # need to clear cache to make sure the function is run again
     clang_tidy._get_executable.cache_clear()
-    clang_tidy._get_executable("clang-tidy")
+    clang_tidy.get_executable("clang-tidy")
     assert capsys.readouterr().out
 
 
