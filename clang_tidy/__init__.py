@@ -33,7 +33,8 @@ def _get_executable(name:str) -> Path:
                 print(f'Found binary: {exe} ')
             return exe
 
-    raise FileNotFoundError(f"No executable found for {name} at\n{possibles}")
+    possibles_str = "\n\t".join(map(str, possibles))
+    raise FileNotFoundError(f"No executable found for {name} at\n\t{possibles_str}")
 
 def _run(name, *args):
     command = [_get_executable(name)]
