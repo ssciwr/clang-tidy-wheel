@@ -59,3 +59,13 @@ def clang_tidy():
     raise SystemExit(_run("clang-tidy"))
 
 
+def clang_apply_replacements():
+    raise SystemExit(_run("clang-apply-replacements"))
+
+
+def run_clang_tidy():
+    raise SystemExit(_run_python("run-clang-tidy.py"))
+
+
+def clang_tidy_diff():
+    raise SystemExit(_run_python("clang-tidy-diff.py"))
