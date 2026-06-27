@@ -6,6 +6,14 @@ from pathlib import Path
 import pytest
 
 
+EXECUTABLES = (
+    "clang-tidy",
+    "clang-apply-replacements",
+    "run-clang-tidy.py",
+    "clang-tidy-diff.py",
+)
+
+
 @pytest.fixture(autouse=True)
 def ensure_tidy_from_wheel(monkeypatch):
     """test the installed clang_tidy package, not the local one"""
@@ -19,11 +27,12 @@ def ensure_tidy_from_wheel(monkeypatch):
     monkeypatch.delitem(sys.modules, "clang_tidy", raising=False)
 
 
-def test_executable_file(capsys):
+@pytest.mark.parametrize("executable", EXECUTABLES)
+def test_executable_file(capsys, executable):
     import clang_tidy
 
     clang_tidy._get_executable.cache_clear()
-    exe = clang_tidy.get_executable("clang-tidy")
+    exe = clang_tidy.get_executable(executable)
     assert os.path.exists(exe)
     assert os.access(exe, os.X_OK)
     assert capsys.readouterr().out == ""
