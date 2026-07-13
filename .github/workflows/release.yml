@@ -89,7 +89,7 @@ jobs:
         cat clang-tidy_version.txt
 
     - name: Build wheels
-      uses: pypa/cibuildwheel@v3.4
+      uses: pypa/cibuildwheel@v4.1
       env:
         CIBW_ARCHS: "${{ matrix.arch }}"
         CIBW_BEFORE_TEST: rm -rf {package}/clang_tidy
