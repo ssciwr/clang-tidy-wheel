@@ -38,7 +38,7 @@ wheel.packages = ["clang_tidy"]
 wheel.py-api = "py2.py3"
 cmake.version = ">=3.16.0"
 ninja.version = ">=1.10.0"
-cmake.verbose = true
+build.verbose = true
 logging.level = "DEBUG"
 
 [tool.cibuildwheel]
