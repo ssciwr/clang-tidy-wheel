@@ -33,7 +33,8 @@ def _get_executable(name:str) -> Path:
                 print(f'Found binary: {exe} ')
             return exe
 
-    raise FileNotFoundError(f"No executable found for {name} at\n{possibles}")
+    possibles_str = "\n\t".join(map(str, possibles))
+    raise FileNotFoundError(f"No executable found for {name} at\n\t{possibles_str}")
 
 def _run(name, *args):
     command = [_get_executable(name)]
@@ -59,3 +60,13 @@ def clang_tidy():
     raise SystemExit(_run("clang-tidy"))
 
 
+def clang_apply_replacements():
+    raise SystemExit(_run("clang-apply-replacements"))
+
+
+def run_clang_tidy():
+    raise SystemExit(_run_python("run-clang-tidy.py"))
+
+
+def clang_tidy_diff():
+    raise SystemExit(_run_python("clang-tidy-diff.py"))

@@ -2,11 +2,17 @@
 
 [![PyPI Release](https://img.shields.io/pypi/v/clang-tidy.svg)](https://pypi.org/project/clang-tidy)
 
-This project packages the `clang-tidy` utility as a Python package. It allows you to install `clang-tidy` directly from PyPI:
+This project packages the `clang-tidy` utility and related tools as a Python package. It allows you to install `clang-tidy` directly from PyPI:
 
 ```
 python -m pip install clang-tidy
 ```
+
+The tools provided are:
+- `clang-tidy`: lints C++ source code using configurable rules
+- `clang-apply-replacements`: applies "fixes" that have been exported by `clang-tidy` in YAML format
+- `run-clang-tidy.py`: runs `clang-tidy` over all files in a compilation database or a specified path, with parallelism
+- `clang-tidy-diff.py`: applies `clang-tidy` to the changed lines in a user-provided diff
 
 This projects intends to release a new PyPI package for each major and minor release of `clang-tidy`.
 

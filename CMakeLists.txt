@@ -20,7 +20,7 @@ ExternalProject_add(build-clang-tidy
   USES_TERMINAL_CONFIGURE 1
   USES_TERMINAL_BUILD 1
   CMAKE_ARGS -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DLLVM_ENABLE_ZSTD=OFF -DLLVM_ENABLE_PROJECTS=clang$<SEMICOLON>clang-tools-extra
-  BUILD_COMMAND ${CMAKE_COMMAND} --build . --target clang-tidy
+  BUILD_COMMAND ${CMAKE_COMMAND} --build . --target clang-tidy clang-apply-replacements
 )
 
 set(config-subfolder "")
@@ -28,6 +28,7 @@ if(CMAKE_GENERATOR MATCHES "Visual Studio")
   set(config-subfolder "Release")
 endif()
 set(clang-tidy-executable ${CMAKE_BINARY_DIR}/llvm/${config-subfolder}/bin/clang-tidy${CMAKE_EXECUTABLE_SUFFIX})
+set(clang-apply-replacements-executable ${CMAKE_BINARY_DIR}/llvm/${config-subfolder}/bin/clang-apply-replacements${CMAKE_EXECUTABLE_SUFFIX})
 
 # Reduce the size of the executable by executing strip if it is present on the system
 find_program(STRIP_EXECUTABLE strip)
@@ -36,15 +37,22 @@ if(STRIP_EXECUTABLE)
     strip-clang-tidy
     ALL
     COMMAND ${STRIP_EXECUTABLE} ${clang-tidy-executable}
-    COMMENT "Stripping clang-tidy executable for size reduction"
+    COMMAND ${STRIP_EXECUTABLE} ${clang-apply-replacements-executable}
+    COMMENT "Stripping clang-tidy and clang-apply-replacements executables for size reduction"
   )
   add_dependencies(strip-clang-tidy build-clang-tidy)
 endif()
+
+ExternalProject_Get_Property(build-clang-tidy SOURCE_DIR)
+set(llvm-source-dir "${SOURCE_DIR}")
 
 # Define an installation rule that copies the executable to our Python package
 install(
   PROGRAMS
     ${clang-tidy-executable}
+    ${clang-apply-replacements-executable}
+    ${llvm-source-dir}/clang-tools-extra/clang-tidy/tool/run-clang-tidy.py
+    ${llvm-source-dir}/clang-tools-extra/clang-tidy/tool/clang-tidy-diff.py
   DESTINATION clang_tidy/data/bin
 )
 
