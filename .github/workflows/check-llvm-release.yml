@@ -1,0 +1,64 @@
+name: Check for new LLVM release
+
+on:
+  schedule:
+    # every Monday at 06:00 UTC
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+    inputs:
+      deploy_to_testpypi:
+        description: "Whether the dispatched build should be deployed to test.pypi.org instead of regular PyPI"
+        required: true
+        default: false
+        type: boolean
+
+jobs:
+  check-release:
+    name: Dispatch release build for new LLVM version
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'ssciwr'
+    permissions:
+      actions: write
+      contents: read
+
+    steps:
+      - name: Get latest LLVM release
+        id: llvm
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag=$(gh release view --repo llvm/llvm-project --json tagName --jq .tagName)
+          version="${tag#llvmorg-}"
+          echo "Latest LLVM release: ${version}"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+
+      - name: Check whether version is on PyPI
+        id: pypi
+        env:
+          LLVM_VERSION: ${{ steps.llvm.outputs.version }}
+        run: |
+          # a release counts as available if PyPI has X.Y.Z or any X.Y.Z.N
+          pypi_json=$(curl -sSf https://pypi.org/pypi/clang-tidy/json)
+          available=$(jq -er --arg v "$LLVM_VERSION" '.releases | keys | any(. == $v or startswith($v + ".")) | tostring' <<< "$pypi_json")
+          if [[ "$available" == true ]]; then
+            echo "clang-tidy ${LLVM_VERSION} is already on PyPI"
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "clang-tidy ${LLVM_VERSION} is not on PyPI yet"
+            echo "available=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Dispatch release workflow
+        if: steps.pypi.outputs.available == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          LLVM_VERSION: ${{ steps.llvm.outputs.version }}
+          # scheduled runs have no inputs and always deploy to PyPI
+          DEPLOY_TO_TESTPYPI: ${{ inputs.deploy_to_testpypi || false }}
+        run: |
+          gh workflow run release.yml \
+            --repo "${{ github.repository }}" \
+            --ref "${{ github.event.repository.default_branch }}" \
+            -f llvm_version="${LLVM_VERSION}" \
+            -f wheel_version=0 \
+            -f deploy_to_testpypi="${DEPLOY_TO_TESTPYPI}"
