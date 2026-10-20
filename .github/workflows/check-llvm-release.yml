@@ -38,8 +38,9 @@ jobs:
           LLVM_VERSION: ${{ steps.llvm.outputs.version }}
         run: |
           # a release counts as available if PyPI has X.Y.Z or any X.Y.Z.N
-          if curl -sSf https://pypi.org/pypi/clang-tidy/json \
-              | jq -e --arg v "$LLVM_VERSION" '.releases | keys | any(. == $v or startswith($v + "."))' > /dev/null; then
+          pypi_json=$(curl -sSf https://pypi.org/pypi/clang-tidy/json)
+          available=$(jq -er --arg v "$LLVM_VERSION" '.releases | keys | any(. == $v or startswith($v + ".")) | tostring' <<< "$pypi_json")
+          if [[ "$available" == true ]]; then
             echo "clang-tidy ${LLVM_VERSION} is already on PyPI"
             echo "available=true" >> "$GITHUB_OUTPUT"
           else
